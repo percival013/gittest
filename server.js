@@ -176,10 +176,20 @@ app.post('/login', async (req, res) => {
     const user = await Users.findOne({ email, password });
 
     if (user) {
-        req.session.userId = user.id; 
+        req.session.userId = user._id; 
         res.cookie('sessionId', req.session.id, { maxAge: 86400000, httpOnly: true });
         res.redirect('dashboard.html');
     } else {
+        res.redirect('login.html');
+    }
+});
+
+app.get('/dashboard', (req, res) => {
+    if (req.session.userId) {
+        // User is logged in
+        res.send(`Welcome, user ID: ${req.session.userId}`);
+    } else {
+        // User is not logged in
         res.redirect('login.html');
     }
 });
