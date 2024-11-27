@@ -2,7 +2,8 @@ const express = require('express')
 const mongoose = require('mongoose')
 const path = require('path')
 const session = require('express-session')
-const MongoStore = require('connect-mongo')
+const RedisStore = require('connect-redis')(session)
+const redis = require('redis')
 const port = 3019
 const app = express()
 const mongoUrl = 'mongodb+srv://admin:BKjonpCFvhw1QnPe@dbcluster.rzvwo.mongodb.net/fixerfinder'
@@ -16,10 +17,7 @@ process.on('exit', function(code) {
     
 });
 
-mongoose.connect(mongoUrl, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true
-})
+
 
 app.use(cors({
     origin: '*',
@@ -31,18 +29,30 @@ app.use(express.static(__dirname))
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 
-const mongoStore = new MongoStore({
-    mongoUrl: mongoUrl,
-    mongooseConnection: mongoose.connection, 
-    collectionName: 'users'
+const redisClient = createClient({
+    password: 'Tufn9cJjwnwbaUYuxVKBJo3841APxj7I',
+    socket: {
+        host: 'redis-15081.c292.ap-southeast-1-1.ec2.redns.redis-cloud.com',
+        port: 15081
+    }
 });
 
+redisClient.on('error', (err) => console.log('Redis Client Error', err));
+
+mongoose.connect(mongoUrl, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true
+})
+
+const redisStore = new RedisStore({ client: redisClient });
+
 app.use(session({
-    secret: 'BKjonpCFvhw1QnPe',
+    secret: 'BKjonpCFvhw1QnPe', 
     resave: false,
     saveUninitialized: true,
-    cookie: mongoStore
-}))
+    cookie: { maxAge: 86400000 }, 
+    store: redisStore
+}));
 
 const db = mongoose.connection
 db.once('open',()=>{
