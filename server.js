@@ -3,7 +3,6 @@ const mongoose = require('mongoose')
 const path = require('path')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')
-const bcrypt = require('bcrypt')
 const port = 3019
 const app = express()
 const mongoUrl = 'mongodb+srv://admin:BKjonpCFvhw1QnPe@dbcluster.rzvwo.mongodb.net/fixerfinder'
