@@ -2,7 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const path = require('path')
 const session = require('express-session')
-const RedisStore = require('connect-redis')(session)
+const RedisStore = require('connect-redis')(session);
 const redis = require('redis')
 const port = 3019
 const app = express()
@@ -21,7 +21,7 @@ const redisClient = redis.createClient({
 
 app.use(session({
     store: new RedisStore({ client: redisClient }),
-    secret: 'your-secret', 
+    secret: 'BKjonpCFvhw1QnPe', 
     resave: false,
     saveUninitialized: true,
     cookie: { maxAge: 86400000 }, 
