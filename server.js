@@ -2,7 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const path = require('path')
 const session = require('express-session')
-const connectRedis = require('connect-redis')
+const RedisStore = require('connect-redis')(session)
 const redis = require('redis')
 const port = 3019
 const app = express()
@@ -18,8 +18,6 @@ const redisClient = redis.createClient({
         port: 15081
     }
 });
-
-const RedisStore = connectRedis(session); 
 
 app.use(session({
     store: new RedisStore({ client: redisClient }),
