@@ -20,36 +20,43 @@ const redisClient = createClient({
     }
 });
 
-redisClient.connect()
-    .then(() => console.log('Connected to Redis'))
-    .catch(err => console.error('Redis connection error:', err));
+const RedisStore = connectRedis(session);
 
-    const RedisStore = connectRedis(session);
+(async () => {
+    try {
+        await redisClient.connect();
+        console.log('Connected to Redis');
 
-    (async () => {
-        try {
-            await redisClient.connect();
-            console.log('Connected to Redis');
-    
-            app.use(session({
-                store: new RedisStore({ client: redisClient }),
-                secret: 'your-secret',
-                resave: false,
-                saveUninitialized: true,
-                cookie: { maxAge: 86400000 },
-            }));
-    
-            app.listen(3019, () => {
-                console.log('Server started on port 3019');
-            });
-        } catch (err) {
-            console.error('Error connecting to Redis:', err);
-        }
-    })();
+        app.use(session({
+            store: new RedisStore({ client: redisClient }),
+            secret: 'your-secret',
+            resave: false,
+            saveUninitialized: true,
+            cookie: { maxAge: 86400000 },
+        }));
+
+        app.listen(3019, () => {
+            console.log('Server started on port 3019');
+        });
+    } catch (err) {
+        console.error('Error connecting to Redis:', err);
+    }
+})();
+
+
+redisClient.on('error', (err) => {
+    console.error('Redis Client Error:', err);
+});
 
 process.on('exit', function(code) {
     console.log(`About to exit with code: ${code}`);
     
+});
+
+process.on('SIGINT', async () => {
+    await redisClient.quit();
+    console.log('Redis client closed');
+    process.exit(0);
 });
 
 app.use(cors({
