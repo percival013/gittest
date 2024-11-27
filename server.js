@@ -30,12 +30,13 @@ app.use(session({
     secret: 'BKjonpCFvhw1QnPe',
     resave: false,
     saveUninitialized: true,
-    cookie:{maxAge: 60000 },
-    store: new MongoStore({
-        mongooseConnection: mongoose.connection, 
-        collectionName: 'sessions'
-    })
+    cookie: mongoStore
 }))
+
+const mongoStore = new MongoStore({
+    mongooseConnection: mongoose.connection, 
+    collectionName: 'sessions'
+});
 
 mongoose.connect(mongoUrl, {
     useUnifiedTopology: true,
