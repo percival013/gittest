@@ -35,8 +35,8 @@ const RedisStore = connectRedis(session);
             cookie: { maxAge: 86400000 },
         }));
 
-        app.listen(3019, () => {
-            console.log('Server started on port 3019');
+        app.listen(3018, () => {
+            console.log('Server started on port 3018');
         });
     } catch (err) {
         console.error('Error connecting to Redis:', err);
@@ -89,8 +89,8 @@ const UserSchema = new mongoose.Schema({
     isApproved: { type: Boolean, required: true },
     createdAt: { type: Date, default: Date.now },
     address: { type: String, required: true },
-    city: { type: String, required: true }, // Add city field
-    province: { type: String, required: true }, // Add province field
+    city: { type: String, required: true },
+    province: { type: String, required: true }, 
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true }
 });
@@ -111,8 +111,8 @@ const AdvertisementRequestSchema = new mongoose.Schema({
     serviceDescription: { type: String, required: true },
     averagePrice: { type: Number, required: true },
     address: { type: String, required: true },
-    city: { type: String, required: true }, // Add city field
-    province: { type: String, required: true }, // Add province field
+    city: { type: String, required: true },
+    province: { type: String, required: true },
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
     providerId: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
@@ -171,33 +171,6 @@ app.get('/',(req,res)=>{
     res.sendFile(path.join(__dirname,'index.html'))
 })
 
-app.post('/applications', async (req, res) => {
-    const { address, gender, phone, proofOfWork } = req.body;
-
-    
-    const userId = req.session.userId;
-
-    
-    if (!userId || !address || !gender || !phone || !proofOfWork) {
-        return res.status(400).send({ error: 'All fields are required' });
-    }
-
-    try {
-        const newApplication = new Application({ 
-            userId,
-            address,
-            gender,
-            phone,
-            proofOfWork
-        });
-        await newApplication.save();
-        console.log('Application saved:', newApplication); 
-        res.status(201).send(newApplication);
-    } catch (error) {
-        console.error('Error saving application:', error); 
-        res.status(500).send({ error: 'Internal Server Error' });
-    }
-});
 
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
@@ -275,6 +248,34 @@ app.get('/api/user', async (req, res) => {
         latitude: user.latitude,
         longitude: user.longitude
     });
+});
+
+app.post('/applications', async (req, res) => {
+    const { address, gender, phone, proofOfWork } = req.body;
+
+    
+    const userId = req.session.userId;
+
+    
+    if (!userId || !address || !gender || !phone || !proofOfWork) {
+        return res.status(400).send({ error: 'All fields are required' });
+    }
+
+    try {
+        const newApplication = new Application({ 
+            userId,
+            address,
+            gender,
+            phone,
+            proofOfWork
+        });
+        await newApplication.save();
+        console.log('Application saved:', newApplication); 
+        res.status(201).send(newApplication);
+    } catch (error) {
+        console.error('Error saving application:', error); 
+        res.status(500).send({ error: 'Internal Server Error' });
+    }
 });
 
 app.get('/api/get-users', async (req, res) => {
