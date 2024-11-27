@@ -27,7 +27,7 @@ app.use(express.static(__dirname))
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 
-const redisClient = createClient({
+const redisClient = redis.createClient({
     password: 'Tufn9cJjwnwbaUYuxVKBJo3841APxj7I',
     socket: {
         host: 'redis-15081.c292.ap-southeast-1-1.ec2.redns.redis-cloud.com',
