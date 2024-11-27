@@ -18,6 +18,7 @@ process.on('exit', function(code) {
 });
 
 const mongoStore = new MongoStore({
+    mongoUrl: mongoUrl,
     mongooseConnection: mongoose.connection, 
     collectionName: 'sessions'
 });
