@@ -29,7 +29,7 @@ const RedisStore = connectRedis(session);
 
         app.use(session({
             store: new RedisStore({ client: redisClient }),
-            secret: 'your-secret',
+            secret: 'BKjonpCFvhw1QnPe',
             resave: false,
             saveUninitialized: true,
             cookie: { maxAge: 86400000 },
@@ -171,19 +171,19 @@ app.get('/',(req,res)=>{
     res.sendFile(path.join(__dirname,'index.html'))
 })
 
-
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const user = await Users.findOne({ email, password });
 
     if (user) {
-        req.session.userId = user.id; // This should now work
+        req.session.userId = user.id; 
         res.cookie('sessionId', req.session.id, { maxAge: 86400000, httpOnly: true });
         res.redirect('dashboard.html');
     } else {
         res.redirect('login.html');
     }
 });
+
 
 app.post('/post', async (req, res) => {
     const { username, email, password, address, city, province, latitude, longitude } = req.body;
