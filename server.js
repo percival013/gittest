@@ -17,6 +17,11 @@ process.on('exit', function(code) {
     
 });
 
+const mongoStore = new MongoStore({
+    mongooseConnection: mongoose.connection, 
+    collectionName: 'sessions'
+});
+
 app.use(cors({
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -32,11 +37,6 @@ app.use(session({
     saveUninitialized: true,
     cookie: mongoStore
 }))
-
-const mongoStore = new MongoStore({
-    mongooseConnection: mongoose.connection, 
-    collectionName: 'sessions'
-});
 
 mongoose.connect(mongoUrl, {
     useUnifiedTopology: true,
