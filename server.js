@@ -44,11 +44,11 @@ mongoose.connect(mongoUrl, {
 const RedisStore = connectRedis(session)
 
 app.use(session({
+    store: new RedisStore({ client: redisClient }),
     secret: 'BKjonpCFvhw1QnPe', 
     resave: false,
     saveUninitialized: true,
     cookie: { maxAge: 86400000 }, 
-    store: redisStore
 }));
 
 const db = mongoose.connection
