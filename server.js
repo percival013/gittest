@@ -19,6 +19,16 @@ const redisClient = redis.createClient({
     }
 });
 
+const RedisStore = connectRedis(session); 
+
+app.use(session({
+    store: new RedisStore({ client: redisClient }),
+    secret: 'your-secret', 
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 86400000 }, 
+}));
+
 process.on('exit', function(code) {
     console.log(`About to exit with code: ${code}`);
     
@@ -40,16 +50,6 @@ mongoose.connect(mongoUrl, {
     useUnifiedTopology: true,
     useNewUrlParser: true
 })
-
-const RedisStore = connectRedis(session);
-
-app.use(session({
-    store: new RedisStore({ client: redisClient }),
-    secret: 'BKjonpCFvhw1QnPe', 
-    resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 86400000 }, 
-}));
 
 const db = mongoose.connection
 db.once('open',()=>{
