@@ -4,7 +4,7 @@ const path = require('path')
 const session = require('express-session')
 const {createClient} = require('redis')
 const connectRedis = require('connect-redis')
-const port = 3018
+const port = 3019
 const app = express()
 const mongoUrl = 'mongodb+srv://admin:BKjonpCFvhw1QnPe@dbcluster.rzvwo.mongodb.net/fixerfinder'
 const cookieParser = require('cookie-parser')
@@ -36,7 +36,7 @@ const RedisStore = connectRedis(session);
         }));
 
         app.listen(3018, () => {
-            console.log('Server started on port 3018');
+            console.log('Server started on port 3019');
         });
     } catch (err) {
         console.error('Error connecting to Redis:', err);
