@@ -2,7 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const path = require('path')
 const session = require('express-session')
-const RedisStore = require('connect-redis')(session)
+const RedisStore = require('connect-redis')
 const redis = require('redis')
 const port = 3019
 const app = express()
@@ -16,8 +16,6 @@ process.on('exit', function(code) {
     console.log(`About to exit with code: ${code}`);
     
 });
-
-
 
 app.use(cors({
     origin: '*',
