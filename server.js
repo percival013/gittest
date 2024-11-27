@@ -30,10 +30,10 @@ app.use(session({
     secret: 'BKjonpCFvhw1QnPe',
     resave: false,
     saveUninitialized: true,
-    cookie:{maxAge: 34560000},
+    cookie:{maxAge: 60000 },
     store: new MongoStore({
-        mongoUrl: mongoUrl,
-        collectionName: 'users'
+        mongooseConnection: mongoose.connection, 
+        collectionName: 'sessions'
     })
 }))
 
