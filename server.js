@@ -17,11 +17,10 @@ process.on('exit', function(code) {
     
 });
 
-const mongoStore = new MongoStore({
-    mongoUrl: mongoUrl,
-    mongooseConnection: mongoose.connection, 
-    collectionName: 'sessions'
-});
+mongoose.connect(mongoUrl, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true
+})
 
 app.use(cors({
     origin: '*',
@@ -32,6 +31,13 @@ app.use(cookieParser())
 app.use(express.static(__dirname))
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
+
+const mongoStore = new MongoStore({
+    mongoUrl: mongoUrl,
+    mongooseConnection: mongoose.connection, 
+    collectionName: 'users'
+});
+
 app.use(session({
     secret: 'BKjonpCFvhw1QnPe',
     resave: false,
@@ -39,10 +45,6 @@ app.use(session({
     cookie: mongoStore
 }))
 
-mongoose.connect(mongoUrl, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true
-})
 const db = mongoose.connection
 db.once('open',()=>{
     console.log("MongoDb Connection established!")
