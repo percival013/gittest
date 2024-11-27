@@ -2,7 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const path = require('path')
 const session = require('express-session')
-const RedisStore = require('connect-redis')(session)
+const RedisStore = require('connect-redis')
 const redis = require('redis')
 const port = 3019
 const app = express()
@@ -11,6 +11,13 @@ const cookieParser = require('cookie-parser')
 const cors = require('cors');
 const router = express.Router()
 const Message = require('./models/Message')
+const redisClient = redis.createClient({
+    password: 'Tufn9cJjwnwbaUYuxVKBJo3841APxj7I',
+    socket: {
+        host: 'redis-15081.c292.ap-southeast-1-1.ec2.redns.redis-cloud.com',
+        port: 15081
+    }
+});
 
 process.on('exit', function(code) {
     console.log(`About to exit with code: ${code}`);
@@ -26,14 +33,6 @@ app.use(cookieParser())
 app.use(express.static(__dirname))
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
-
-const redisClient = redis.createClient({
-    password: 'Tufn9cJjwnwbaUYuxVKBJo3841APxj7I',
-    socket: {
-        host: 'redis-15081.c292.ap-southeast-1-1.ec2.redns.redis-cloud.com',
-        port: 15081
-    }
-});
 
 redisClient.on('error', (err) => console.log('Redis Client Error', err));
 
