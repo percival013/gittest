@@ -2,8 +2,8 @@ const express = require('express')
 const mongoose = require('mongoose')
 const path = require('path')
 const session = require('express-session')
-const RedisStore = require('connect-redis')(session);
-const redis = require('redis')
+const {createClient} = require('redis')
+const connectRedis = require('connect-redis')
 const port = 3019
 const app = express()
 const mongoUrl = 'mongodb+srv://admin:BKjonpCFvhw1QnPe@dbcluster.rzvwo.mongodb.net/fixerfinder'
@@ -11,6 +11,7 @@ const cookieParser = require('cookie-parser')
 const cors = require('cors');
 const router = express.Router()
 const Message = require('./models/Message')
+
 const redisClient = redis.createClient({
     password: 'Tufn9cJjwnwbaUYuxVKBJo3841APxj7I',
     socket: {
@@ -19,13 +20,32 @@ const redisClient = redis.createClient({
     }
 });
 
-app.use(session({
-    store: new RedisStore({ client: redisClient }),
-    secret: 'BKjonpCFvhw1QnPe', 
-    resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 86400000 }, 
-}));
+redisClient.connect()
+    .then(() => console.log('Connected to Redis'))
+    .catch(err => console.error('Redis connection error:', err));
+
+    const RedisStore = connectRedis(session);
+
+    (async () => {
+        try {
+            await redisClient.connect();
+            console.log('Connected to Redis');
+    
+            app.use(session({
+                store: new RedisStore({ client: redisClient }),
+                secret: 'your-secret',
+                resave: false,
+                saveUninitialized: true,
+                cookie: { maxAge: 86400000 },
+            }));
+    
+            app.listen(3019, () => {
+                console.log('Server started on port 3019');
+            });
+        } catch (err) {
+            console.error('Error connecting to Redis:', err);
+        }
+    })();
 
 process.on('exit', function(code) {
     console.log(`About to exit with code: ${code}`);
