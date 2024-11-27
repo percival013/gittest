@@ -4,7 +4,7 @@ const path = require('path')
 const session = require('express-session')
 const {createClient} = require('redis')
 const connectRedis = require('connect-redis')
-const port = 3019
+const port = 3018
 const app = express()
 const mongoUrl = 'mongodb+srv://admin:BKjonpCFvhw1QnPe@dbcluster.rzvwo.mongodb.net/fixerfinder'
 const cookieParser = require('cookie-parser')
@@ -204,7 +204,7 @@ app.post('/login', async (req, res) => {
     const user = await Users.findOne({ email, password });
 
     if (user) {
-        req.session.userId = user.id; 
+        req.session.userId = user.id; // This should now work
         res.cookie('sessionId', req.session.id, { maxAge: 86400000, httpOnly: true });
         res.redirect('dashboard.html');
     } else {
