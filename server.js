@@ -41,7 +41,7 @@ mongoose.connect(mongoUrl, {
     useNewUrlParser: true
 })
 
-const redisStore = new RedisStore({ client: redisClient });
+const RedisStore = connectRedis(session)
 
 app.use(session({
     secret: 'BKjonpCFvhw1QnPe', 
